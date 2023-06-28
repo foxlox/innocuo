@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2023/06/17 06:52:18.000.972,C:\Users\fox\Documents\Embarcadero\Studio\Projects\nthash\Project1.dproj=C:\Users\fox\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2023/06/17 07:47:03.000.288,=C:\Users\fox\Documents\Embarcadero\Studio\Projects\nthash\Unit1.pas</Transaction>
+    <Transaction>2023/06/17 07:47:13.000.928,C:\Users\fox\Documents\Embarcadero\Studio\Projects\nthash\ntdll.pas=C:\Users\fox\Documents\Embarcadero\Studio\Projects\nthash\Unit1.pas</Transaction>
+    <Transaction>2023/06/17 16:56:18.000.741,=C:\Users\fox\Documents\Embarcadero\Studio\Projects\nthash\uadvapi32.pas</Transaction>
+    <Transaction>2023/06/17 16:59:05.000.804,C:\Users\fox\Documents\Embarcadero\Studio\Projects\nthash\uadvapi32.pas=</Transaction>
+    <Transaction>2023/06/17 17:52:11.000.644,=C:\Users\fox\Documents\Embarcadero\Studio\Projects\nthash\uadvapi32.pas</Transaction>
+    <Transaction>2023/06/17 18:37:01.000.710,C:\Users\fox\Documents\Embarcadero\Studio\Projects\nthash\innocuo.dproj=C:\Users\fox\Documents\Embarcadero\Studio\Projects\nthash\Project1.dproj</Transaction>
+  </Transactions>
+</BorlandProject>
