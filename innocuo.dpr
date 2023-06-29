@@ -14,8 +14,9 @@ var
 key:string;
 
 begin
+
   try
-    if paramstr(1)='xor' then
+    if LowerCase(paramstr(1))='xor' then
     begin
 
      key:='FF';

