@@ -6,15 +6,12 @@ program innocuo;
 
 uses
   System.SysUtils,
-  uimagehlp,
-  ntdll in 'ntdll.pas',
-  uadvapi32 in 'uadvapi32.pas',uxor;
+  uimagehlp,uxor;
 
 var
 key:string;
 
 begin
-
   try
     if LowerCase(paramstr(1))='xor' then
     begin
@@ -24,7 +21,10 @@ begin
        then writeln('Done!')
        else writeln('Error decoding file');
     end
-    else dumpprocess3(strtoint(paramstr(1))) //15156
+    else
+     begin
+      dumpprocess(strtoint(paramstr(1))) //15156
+     end;
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);

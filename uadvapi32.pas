@@ -100,45 +100,19 @@ type
 
 
 
-//SystemFunction004
-//extern NTSTATUS WINAPI RtlEncryptDESblocksECB(IN PCCRYPTO_BUFFER data, IN PCCRYPTO_BUFFER key, OUT PCRYPTO_BUFFER output);
-//SystemFunction005  -> use to decrypt lsasecrets on NT5
-//extern NTSTATUS WINAPI RtlDecryptDESblocksECB(IN PCCRYPTO_BUFFER data, IN PCCRYPTO_BUFFER key, OUT PCRYPTO_BUFFER output);
 function RtlDecryptDESblocksECB(const data:_CRYPTO_BUFFER;const key:_CRYPTO_BUFFER;var output:_CRYPTO_BUFFER):dword ;StdCall;external 'advapi32.dll' name 'SystemFunction005';
-//SystemFunction032 or SystemFunction033?
-//extern NTSTATUS WINAPI RtlEncryptDecryptRC4(IN OUT PCRYPTO_BUFFER data, IN PCCRYPTO_BUFFER key);
 function RtlEncryptDecryptRC4(var  data:_CRYPTO_BUFFER;   const key:_CRYPTO_BUFFER):dword ;StdCall;external 'advapi32.dll' name 'SystemFunction032';
 
-//extern NTSTATUS WINAPI RtlDecryptDES2blocks1DWORD(IN LPCBYTE data, IN LPDWORD key, OUT LPBYTE output);
 function RtlDecryptDES2blocks1DWORD(const data:pointer; key:pdword;var output:array of byte):dword ;StdCall;external 'advapi32.dll' name 'SystemFunction025';
 
 
-// The MD5Init function initializes an MD5 message digest context.
 procedure MD5Init(var ctx : MD5_CTX); stdcall;external 'advapi32.dll';
-// The MD5Update function updates the MD5 context by using the supplied buffer for the message whose MD5 digest is being generated
 procedure MD5Update(var ctx : MD5_CTX; const Buffer; const BufferSize : LongInt); stdcall;external 'advapi32.dll';
-//The MD5Final function ends an MD5 message digest previously started by a call to the MD5Init function
 procedure MD5Final(var ctx : MD5_CTX); stdcall;external 'advapi32.dll';
-//function MD5string(const data : Ansistring):AnsiString;
-//function MD5_Selftest:Boolean;
 
-{lets go late binding
-function CreateProcessWithTokenW(hToken: THandle;
-  dwLogonFlags: DWORD;
-  lpApplicationName: PWideChar;
-  lpCommandLine: PWideChar;
-  dwCreationFlags: DWORD;
-  lpEnvironment: Pointer;
-  lpCurrentDirectory: PWideChar;
-  lpStartupInfo: PStartupInfoW;
-  lpProcessInformation: PProcessInformation): BOOL; stdcall;external 'advapi32.dll';
-  }
+function RevertToSelf: BOOL; stdcall;external 'advapi32.dll';
 
-  function RevertToSelf: BOOL; stdcall;external 'advapi32.dll';
-
-//function ConvertStringSidToSidA(StringSid: LPCSTR; var Sid: PSID): BOOL; stdcall;
 function ConvertStringSidToSidW(StringSid: LPCWSTR; var Sid: PSID): BOOL; stdcall;external 'advapi32.dll';
-//function ConvertStringSidToSid(StringSid: LPCTSTR; var Sid: PSID): BOOL; stdcall;
 function ConvertStringSidToSidA(StringSid: pchar; var Sid: PSID): BOOL; stdcall;external 'advapi32.dll';// name 'ConvertStringSidToSidA';
 
 function ConvertSidToStringSidA(SID: PSID; var StringSid: pchar): Boolean; stdcall;
@@ -146,7 +120,6 @@ function ConvertSidToStringSidA(SID: PSID; var StringSid: pchar): Boolean; stdca
 function ConvertSidToStringSidW(SID: PSID; var StringSid: pwidechar): Boolean; stdcall;
     external 'advapi32.dll';// name 'ConvertSidToStringSidA';
 
-// SHA1
 
 type
   SHA_CTX = packed record
@@ -163,8 +136,6 @@ type
 procedure A_SHAInit(var Context: SHA_CTX); StdCall;external 'advapi32.dll';
 procedure A_SHAUpdate(var Context: SHA_CTX; const Input; inlen: LongWord); StdCall;external 'advapi32.dll';
 procedure A_SHAFinal(var Context: SHA_CTX; out Digest:SHA_DIG); StdCall;external 'advapi32.dll';
-
-//function SHA_Selftest:Boolean;
 
 implementation
 
@@ -188,7 +159,6 @@ type
   _LSA_UNICODE_STRING = record
     Length: USHORT;  //2
     MaximumLength: USHORT; //2
-    //in x64 an extra dword fiedl may be needed to align to 8 bytes !!!!!!!!!
     {$ifdef CPU64}dummy:dword; {$endif cpu64} //4
     Buffer: PWSTR;
   end;
@@ -315,7 +285,6 @@ begin
                     try
                       if GetTokenInformation(ImpersonateToken, TTokenInformationClass(TokenIntegrityLevel), MandatoryLabel, ReturnLength, ReturnLength) then
                       begin
-                        //writeln('GetTokenInformation OK');
                         if IntegrityLevel = SystemIntegrityLevel then
                           PIntegrityLevel := (SYSTEM_INTEGRITY_SID)
                         else if IntegrityLevel = HighIntegrityLevel then
@@ -328,13 +297,11 @@ begin
                         writeln('IntegrityLevel: '+strpas(PIntegrityLevel));
                         if ConvertStringSidToSidw(PIntegrityLevel, Sid) then
                         begin
-                          //writeln('ConvertStringSidToSidW OK');
                           MandatoryLabel.Label_.Sid := Sid;
                           MandatoryLabel.Label_.Attributes := SE_GROUP_INTEGRITY;
                           if SetTokenInformation(ImpersonateToken, TTokenInformationClass(TokenIntegrityLevel), MandatoryLabel, SizeOf(TOKEN_MANDATORY_LABEL) + GetLengthSid(Sid)) then
                           begin
                             Result := TCreateProcessWithTokenW(CreateProcessWithTokenW)(ImpersonateToken, 0, ApplicationName, CommandLine, CreationFlags, Environment, CurrentDirectory, @StartupInfo, @ProcessInformation);
-                            //writeln(result);
                             SetLastError(0);
                           end;
                         end;
@@ -396,7 +363,6 @@ begin
                     try
                       if GetTokenInformation(ImpersonateToken, TTokenInformationClass(TokenIntegrityLevel), MandatoryLabel, ReturnLength, ReturnLength) then
                       begin
-                        //writeln('IntegrityLevel: '+strpas(PIntegrityLevel));
                         if IntegrityLevel = SystemIntegrityLevel then
                           PIntegrityLevel := SYSTEM_INTEGRITY_SID
                         else if IntegrityLevel = HighIntegrityLevel then
@@ -412,13 +378,6 @@ begin
                           MandatoryLabel.Label_.Attributes := SE_GROUP_INTEGRITY;
                           if SetTokenInformation(ImpersonateToken, TTokenInformationClass(TokenIntegrityLevel), MandatoryLabel, SizeOf(TOKEN_MANDATORY_LABEL) + GetLengthSid(Sid)) then
                           begin
-                            {
-                            FillChar(StartInfo, SizeOf(TStartupInfoW), #0);
-                            FillChar(ProcInfo, SizeOf(TProcessInformation), #0);
-                            StartInfo.cb := SizeOf(TStartupInfo);
-                            StartInfo.lpDesktop := pwidechar(widestring('WinSta0\Default'));
-                            Result := CreateProcessWithTokenW(ImpersonateToken, 0, '', widestring('c:\windows\system32\cmd.exe'), CREATE_NEW_PROCESS_GROUP or NORMAL_PRIORITY_CLASS, nil, nil, @StartInfo, @ProcInfo);
-                            }
                             result:=ImpersonateLoggedOnUser (ImpersonateToken);
                             SetLastError(0);
                           end;
